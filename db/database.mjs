@@ -1,11 +1,17 @@
-import mysql from "mysql2";
 import { config } from "../config.mjs";
+import MongoDB from "mongodb";
 
-const pool = mysql.createPool({
-  host: config.db.host,
-  user: config.db.user,
-  database: config.db.database,
-  password: config.db.password,
-});
+let db;
+export async function connectDB() {
+  return MongoDB.MongoClient.connect(config.db.host).then((clinet) => {
+    db = clinet.db("aidetect");
+  });
+}
 
-export const db = pool.promise();
+export function getUsers() {
+  return db.collection("users");
+}
+
+export function getPosts() {
+  return db.collection("posts");
+}
